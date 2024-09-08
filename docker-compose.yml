@@ -1,0 +1,46 @@
+version: "3"
+
+services:
+  tg-spam:
+    image: umputun/tg-spam:latest
+    hostname: tg-spam
+    restart: always
+    container_name: tg-spam
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    environment:
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - TELEGRAM_GROUP=${TELEGRAM_GROUP}
+      - ADMIN_GROUP=${ADMIN_GROUP}
+      - TZ=${TZ}
+      - LOGGER_ENABLED=${LOGGER_ENABLED}
+      - LOGGER_FILE=${LOGGER_FILE}
+      - LOGGER_MAX_SIZE=${LOGGER_MAX_SIZE}
+      - FILES_DYNAMIC=${FILES_DYNAMIC}
+      - FILES_SAMPLES=${FILES_SAMPLES}
+      - FILES_WATCH_INTERVAL=${FILES_WATCH_INTERVAL}
+      - NO_SPAM_REPLY=${NO_SPAM_REPLY}
+      - PARANOID=${PARANOID}
+      - FIRST_MESSAGES_COUNT=${FIRST_MESSAGES_COUNT}
+      - SERVER_ENABLED=${SERVER_ENABLED}
+      - SERVER_LISTEN=${SERVER_LISTEN}
+      - SERVER_AUTH=${SERVER_AUTH}
+    ports:
+      - "${SERVER_PORT}:8080"
+    volumes:
+      - tg-data:/srv/dynamic
+      - tg-samples:/srv/samples
+      - ./logs:/srv/logs
+    command: >
+      --super=${SUPER_USER1} --super=${SUPER_USER2}
+      --similarity-threshold=${SIMILARITY_THRESHOLD}
+      --min-msg-len=${MIN_MSG_LEN}
+      --max-emoji=${MAX_EMOJI}
+      --min-probability=${MIN_PROBABILITY}
+
+volumes:
+  tg-data:
+  tg-samples:
